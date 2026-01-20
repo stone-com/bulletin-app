@@ -3,16 +3,18 @@ const router = express.Router();
 const Comment = require('../models/Comment');
 const Post = require('../models/Post');
 const User = require('../models/User');
+const auth = require('../middleware/auth');
 
 // Create a new comment
-router.post('/create', async (req, res) => {
+router.post('/create', auth, async (req, res) => {
   try {
-    const { postId, authorId, content } = req.body;
+    const { postId, content } = req.body;
+    const authorId = req.user.id;
 
-    if (!postId || !authorId || !content) {
+    if (!postId || !content) {
       return res
         .status(400)
-        .json({ message: 'Post, author, and content are required' });
+        .json({ message: 'Post and content are required' });
     }
 
     // Verify post exists
@@ -48,7 +50,7 @@ router.post('/create', async (req, res) => {
 });
 
 // Update a comment
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
   try {
     const { id } = req.params;
     const { content } = req.body;
@@ -62,7 +64,9 @@ router.put('/:id', async (req, res) => {
       return res.status(404).json({ message: 'Comment not found' });
     }
 
-    // TODO: Add authentication check (e.g., if req.user.id !== comment.author.toString()) return 403
+    if (req.user.id !== comment.author.toString()) {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
 
     comment.content = content;
     await comment.save();
@@ -75,7 +79,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete a comment
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -84,7 +88,9 @@ router.delete('/:id', async (req, res) => {
       return res.status(404).json({ message: 'Comment not found' });
     }
 
-    // TODO: Add authentication check
+    if (req.user.id !== comment.author.toString()) {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
 
     // Remove comment from post's comments array
     const post = await Post.findById(comment.post);

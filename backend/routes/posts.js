@@ -2,17 +2,17 @@ const express = require('express');
 const router = express.Router();
 const Post = require('../models/Post');
 const User = require('../models/User'); // optional, if you need to verify user
+const auth = require('../middleware/auth');
 
 // Create a new post
-router.post('/create', async (req, res) => {
+router.post('/create', auth, async (req, res) => {
   try {
-    const { authorId, content } = req.body;
+    const { content } = req.body;
+    const authorId = req.user.id;
 
     // Basic validation
-    if (!authorId || !content) {
-      return res
-        .status(400)
-        .json({ message: 'Author and content are required' });
+    if (!content) {
+      return res.status(400).json({ message: 'Content is required' });
     }
 
     // Optionally check if the author exists
@@ -36,7 +36,7 @@ router.post('/create', async (req, res) => {
 });
 
 // Update a post
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
   try {
     const { id } = req.params;
     const { content } = req.body;
@@ -50,7 +50,9 @@ router.put('/:id', async (req, res) => {
       return res.status(404).json({ message: 'Post not found' });
     }
 
-    // TODO: Add authentication check (e.g., if req.user.id !== post.author.toString()) return 403
+    if (req.user.id !== post.author.toString()) {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
 
     post.content = content;
     post.updatedAt = Date.now();
@@ -64,7 +66,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete a post
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -73,7 +75,9 @@ router.delete('/:id', async (req, res) => {
       return res.status(404).json({ message: 'Post not found' });
     }
 
-    // TODO: Add authentication check
+    if (req.user.id !== post.author.toString()) {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
 
     await Post.findByIdAndDelete(id);
     res.json({ message: 'Post deleted successfully' });
