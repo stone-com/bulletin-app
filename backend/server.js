@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const mongoose = require('mongoose');
 const cors = require('cors');
 
 const app = express();
@@ -12,6 +13,14 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('Backend is running!');
 });
+
+const mongoURI = process.env.MONGO_URI;
+
+// Connect to MongoDB
+mongoose
+  .connect(mongoURI)
+  .then(() => console.log('MongoDB connected ✅'))
+  .catch((err) => console.error('MongoDB connection error:', err));
 
 // Start server
 const PORT = process.env.PORT || 5000;
