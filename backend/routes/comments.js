@@ -5,6 +5,19 @@ const Post = require('../models/Post');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
 
+// Get comments for a post
+router.get('/post/:postId', async (req, res) => {
+  try {
+    const comments = await Comment.find({ post: req.params.postId })
+      .populate('author', 'username')
+      .sort({ createdAt: 1 });
+    res.json(comments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
 // Create a new comment
 router.post('/create', auth, async (req, res) => {
   try {

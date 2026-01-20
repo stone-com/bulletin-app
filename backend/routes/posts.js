@@ -4,6 +4,38 @@ const Post = require('../models/Post');
 const User = require('../models/User'); // optional, if you need to verify user
 const auth = require('../middleware/auth');
 
+// Get all posts
+router.get('/', async (req, res) => {
+  try {
+    const posts = await Post.find()
+      .populate('author', 'username')
+      .sort({ createdAt: -1 });
+    res.json(posts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
+// Get single post
+router.get('/:id', async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id)
+      .populate('author', 'username')
+      .populate({
+        path: 'comments',
+        populate: { path: 'author', select: 'username' }
+      });
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+    res.json(post);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
 // Create a new post
 router.post('/create', auth, async (req, res) => {
   try {
