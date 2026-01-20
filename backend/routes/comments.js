@@ -47,4 +47,58 @@ router.post('/create', async (req, res) => {
   }
 });
 
+// Update a comment
+router.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { content } = req.body;
+
+    if (!content) {
+      return res.status(400).json({ message: 'Content is required' });
+    }
+
+    const comment = await Comment.findById(id);
+    if (!comment) {
+      return res.status(404).json({ message: 'Comment not found' });
+    }
+
+    // TODO: Add authentication check (e.g., if req.user.id !== comment.author.toString()) return 403
+
+    comment.content = content;
+    await comment.save();
+
+    res.json(comment);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
+// Delete a comment
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const comment = await Comment.findById(id);
+    if (!comment) {
+      return res.status(404).json({ message: 'Comment not found' });
+    }
+
+    // TODO: Add authentication check
+
+    // Remove comment from post's comments array
+    const post = await Post.findById(comment.post);
+    if (post) {
+      post.comments.pull(id);
+      await post.save();
+    }
+
+    await Comment.findByIdAndDelete(id);
+    res.json({ message: 'Comment deleted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
 module.exports = router;
