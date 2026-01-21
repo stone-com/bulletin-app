@@ -1,52 +1,55 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 
-// Register route
-router.post('/register', async (req, res) => {
+// Register route - creates new user account
+router.post("/register", async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
-    // Check if user already exists
+    // Check if email already exists in database (emails must be unique)
     const existingUser = await User.findOne({ email });
     if (existingUser)
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: "User already exists" });
 
+    // Create new user (password will be hashed automatically by User model pre-save hook)
     const user = new User({ username, email, password });
     await user.save();
 
-    res.status(201).json({ message: 'User registered successfully' });
+    res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 
-// Login route
-router.post('/login', async (req, res) => {
+// Login route - authenticates user and returns JWT token
+router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Find user by email
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+    if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
+    // Compare provided password with stored hashed password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: "Invalid credentials" });
 
+    // Generate JWT token that expires in 1 day
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '1d',
+      expiresIn: "1d",
     });
+    // Return token and non-sensitive user data to frontend
     res.json({
       token,
       user: { id: user._id, username: user.username, email: user.email },
     });
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 
 module.exports = router;
-
-

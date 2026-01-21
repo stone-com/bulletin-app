@@ -5,31 +5,41 @@ const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    unique: true,
-    trim: true,
+    unique: true, // Usernames must be unique
+    trim: true,   // Remove whitespace from start/end
   },
   email: {
     type: String,
     required: true,
-    unique: true,
-    lowercase: true,
+    unique: true, // Emails must be unique
+    lowercase: true, // Store all emails in lowercase
     trim: true,
   },
   password: {
     type: String,
     required: true,
+    // Note: password should never be returned in API responses for security
   },
   createdAt: {
-    type: Date,
+    type: Date, // Automatically set to current time
     default: Date.now,
   },
 });
-
-//  Hash password before saving
+// Pre-save hook: Automatically hash password before storing in database
+// Only hash if password is new or modified (not on every save)
 userSchema.pre('save', async function (next) {
-  // If the password hasn’t been changed, just skip hashing and save normally.
-  if (!this.isModified('password')) return;
-  const salt = await bcrypt.genSalt(10);
+  // If the password hasn't been changed, skip hashing
+  if (!this.isModified('password')) return next();
+  try {
+    // Generate salt for hashing (10 rounds of hashing)
+    const salt = await bcrypt.genSalt(10);
+   Instance method: Compare plain text password with stored hashed password (for login)
+// Returns true if passwords match, false otherwise
+userSchema.methods.comparePassword = async function (candidatePassword)
+    next();
+  } catch (err) {
+    next(err);
+  }
   this.password = await bcrypt.hash(this.password, salt);
 });
 
