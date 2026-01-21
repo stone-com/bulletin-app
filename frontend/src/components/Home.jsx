@@ -54,7 +54,7 @@ const Home = ({ user, onLogout }) => {
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div className="posts-list">
         {/* Render each post as a card */}
-        {filteredPosts.map((post) => (
+        {[...filteredPosts].reverse().map((post) => (
           <Post
             key={post._id}
             post={post}
