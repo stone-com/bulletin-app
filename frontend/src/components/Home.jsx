@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./Home.css";
 import Post from "./Post";
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 // Home component: main dashboard after login
 const Home = ({ user, onLogout }) => {
@@ -15,7 +16,7 @@ const Home = ({ user, onLogout }) => {
       setLoading(true);
       setError("");
       try {
-        const res = await fetch("http://localhost:5000/api/posts");
+        const res = await fetch(`${API_BASE}/api/posts`);
         const data = await res.json();
         setPosts(data.reverse()); // Newest first
       } catch (err) {
@@ -62,17 +63,14 @@ const Home = ({ user, onLogout }) => {
             onAddComment={async (postId, text, clearInput) => {
               setError("");
               try {
-                const res = await fetch(
-                  "http://localhost:5000/api/comments/create",
-                  {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                      Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                    body: JSON.stringify({ postId, content: text }),
+                const res = await fetch(`${API_BASE}/api/comments/create`, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
                   },
-                );
+                  body: JSON.stringify({ postId, content: text }),
+                });
                 if (!res.ok) {
                   const data = await res.json();
                   throw new Error(data.message || "Failed to add comment");

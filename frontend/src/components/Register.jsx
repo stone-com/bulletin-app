@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Register.css";
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -17,7 +18,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
+      const response = await fetch(`${API_BASE}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
