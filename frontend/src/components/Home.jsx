@@ -85,7 +85,10 @@ const Home = ({ user, onLogout }) => {
                           ...p,
                           comments: [
                             ...(p.comments || []),
-                            { text, author: { username: user.username } },
+                            {
+                              content: text,
+                              author: { username: user.username },
+                            },
                           ],
                         }
                       : p,

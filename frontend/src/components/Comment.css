@@ -1,5 +1,5 @@
 /* Comment.css - Dark mode styles for Comment component */
-li {
+li.comment-item {
   color: #e0e0e0;
   background: #23272f;
   border-radius: 5px;
@@ -7,7 +7,18 @@ li {
   padding: 0.5em 1em;
   list-style: none;
   font-size: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 b {
+b {
   color: #f6e05e;
+}
+
+.comment-time {
+  color: #7f8fa6;
+  font-size: 0.95em;
+  margin-left: 1em;
+  white-space: nowrap;
 }

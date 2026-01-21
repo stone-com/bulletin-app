@@ -1,8 +1,9 @@
 import { useState } from "react";
 import "./Post.css";
+
 import Comment from "./Comment";
 
-// Helper to format time ago
+// Helper to format time ago (for posts and comments)
 function timeAgo(dateString) {
   const now = new Date();
   const date = new Date(dateString);
@@ -70,9 +71,16 @@ const Post = ({ post, user, onAddComment }) => {
       {showComments && (
         <div className="comments-section">
           <ul>
-            {(post.comments || []).map((c, i) => (
-              <Comment key={c._id || i} comment={c} />
-            ))}
+            {[...(post.comments || [])]
+              .slice()
+              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+              .map((c, i) => (
+                <Comment
+                  key={c._id || i}
+                  comment={c}
+                  timeAgo={timeAgo(c.createdAt)}
+                />
+              ))}
           </ul>
         </div>
       )}
