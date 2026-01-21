@@ -1,0 +1,56 @@
+/* Post.css - Dark mode styles for Post component */
+.post-card {
+  background: #23272f;
+  color: #f1f1f1;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px #000a;
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  transition: box-shadow 0.2s;
+}
+.post-card:hover {
+  box-shadow: 0 4px 16px #000c;
+}
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.comment-count {
+  background: #2d3748;
+  color: #f6e05e;
+  border-radius: 50%;
+  padding: 0.4em 0.7em;
+  font-size: 1rem;
+  font-weight: bold;
+  box-shadow: 0 1px 4px #0006;
+}
+button {
+  background: #3b4252;
+  color: #f1f1f1;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5em 1em;
+  margin-top: 0.5em;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+button:hover {
+  background: #4c566a;
+}
+.comment-form input[type="text"] {
+  background: #181c22;
+  color: #f1f1f1;
+  border: 1px solid #444c56;
+  border-radius: 5px;
+  padding: 0.5em;
+  margin-right: 0.5em;
+}
+.comments-section {
+  background: #181c22;
+  border-radius: 8px;
+  margin-top: 1em;
+  padding: 1em;
+}

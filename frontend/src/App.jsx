@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import Home from "./components/Home";
 import "./App.css";
 
 // Protected route component - redirects to login if user is not authenticated
@@ -62,12 +63,7 @@ function App() {
           path="/dashboard"
           element={
             <ProtectedRoute user={user}>
-              <div>
-                <p>Welcome, {user?.username}!</p>
-                <button onClick={handleLogout}>Logout</button>
-                {/* TODO: Add PostList component and main content here */}
-                <p>Main app content here...</p>
-              </div>
+              <Home user={user} onLogout={handleLogout} />
             </ProtectedRoute>
           }
         />

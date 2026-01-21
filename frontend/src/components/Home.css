@@ -1,0 +1,71 @@
+/* Home.css - Dark mode styles for Home component */
+.home-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  background: #181c22;
+  color: #f1f1f1;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px #000a;
+  padding: 1.5rem;
+}
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.search-bar {
+  flex: 1;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #444c56;
+  background: #23272f;
+  color: #f1f1f1;
+}
+.username {
+  font-weight: bold;
+  margin-right: 1rem;
+  color: #f6e05e;
+}
+.logout-btn {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+.logout-btn:hover {
+  background: #c0392b;
+}
+.posts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.comments-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.5rem 0;
+}
+.comments-section li {
+  margin-bottom: 0.3rem;
+  font-size: 0.97em;
+}
+.comments-section input[type="text"] {
+  width: 80%;
+  padding: 0.4rem;
+  margin-right: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+.comments-section button {
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  border: none;
+  background: #3498db;
+  color: #fff;
+  cursor: pointer;
+}

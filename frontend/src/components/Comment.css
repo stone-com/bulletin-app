@@ -1,0 +1,13 @@
+/* Comment.css - Dark mode styles for Comment component */
+li {
+  color: #e0e0e0;
+  background: #23272f;
+  border-radius: 5px;
+  margin-bottom: 0.5em;
+  padding: 0.5em 1em;
+  list-style: none;
+  font-size: 1rem;
+}
+b {
+  color: #f6e05e;
+}
