@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Login = ({ onLogin }) => {
   // Form state: stores email and password inputs
@@ -70,6 +71,9 @@ const Login = ({ onLogin }) => {
         <button type="submit">Login</button>
       </form>
       {message && <p>{message}</p>}
+      <p>
+        Don't have an account? <Link to="/register">Register here</Link>
+      </p>
     </div>
   );
 };

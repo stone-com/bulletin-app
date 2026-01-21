@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
+    username: "",
+    email: "",
+    password: "",
   });
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -15,21 +16,21 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register', {
-        method: 'POST',
+      const response = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
       const data = await response.json();
       if (response.ok) {
-        setMessage('User registered successfully!');
+        setMessage("User registered successfully! You can now log in.");
       } else {
-        setMessage(data.message || 'Registration failed');
+        setMessage(data.message || "Registration failed");
       }
     } catch (error) {
-      setMessage('Error: ' + error.message);
+      setMessage("Error: " + error.message);
     }
   };
 
@@ -70,6 +71,9 @@ const Register = () => {
         <button type="submit">Register</button>
       </form>
       {message && <p>{message}</p>}
+      <p>
+        Already have an account? <Link to="/login">Login here</Link>
+      </p>
     </div>
   );
 };

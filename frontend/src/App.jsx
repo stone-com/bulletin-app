@@ -1,11 +1,17 @@
 import { useState, useEffect } from "react";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import "./App.css";
 
+// Protected route component - redirects to login if user is not authenticated
+const ProtectedRoute = ({ user, children }) => {
+  return user ? children : <Navigate to="/login" replace />;
+};
+
 function App() {
   const [user, setUser] = useState(null); // Stores logged-in user data
-  const [view, setView] = useState("login"); // Controls which screen to show: 'login', 'register', or 'main'
+  const navigate = useNavigate(); // Hook for programmatic navigation
 
   // On component mount, check if user was previously logged in and still has a valid token
   useEffect(() => {
@@ -14,13 +20,13 @@ function App() {
     // If both token and user exist, restore the session automatically
     if (token && storedUser) {
       setUser(JSON.parse(storedUser)); // Parse JSON string back to object
-      setView("main");
+      navigate("/dashboard"); // Navigate to main app
     }
-  }, []);
+  }, [navigate]);
 
   const handleLogin = (userData) => {
     setUser(userData);
-    setView("main");
+    navigate("/dashboard"); // Navigate to dashboard after login
   };
 
   // Clears user session data from both state and browser storage
@@ -28,29 +34,56 @@ function App() {
     localStorage.removeItem("token"); // Remove JWT token
     localStorage.removeItem("user"); // Remove user data
     setUser(null); // Clear user from state
-    setView("login"); // Redirect to login screen
+    navigate("/login"); // Navigate to login screen
   };
 
   return (
     <div className="App">
       <h1>Bulletin Board</h1>
-      {!user ? (
-        // Display login/register screen if not logged in
-        <div>
-          <button onClick={() => setView("login")}>Login</button>
-          <button onClick={() => setView("register")}>Register</button>
-          {view === "login" && <Login onLogin={handleLogin} />}
-          {view === "register" && <Register />}
-        </div>
-      ) : (
-        // Display main app if user is logged in
-        <div>
-          <p>Welcome, {user.username}!</p>
-          <button onClick={handleLogout}>Logout</button>
-          {/* TODO: Add PostList component and main content here */}
-          <p>Main app content here...</p>
-        </div>
-      )}
+      <Routes>
+        {/* Public routes - only accessible if NOT logged in */}
+        <Route
+          path="/login"
+          element={
+            user ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <Login onLogin={handleLogin} />
+            )
+          }
+        />
+        <Route
+          path="/register"
+          element={user ? <Navigate to="/dashboard" replace /> : <Register />}
+        />
+
+        {/* Protected route - only accessible if logged in */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute user={user}>
+              <div>
+                <p>Welcome, {user?.username}!</p>
+                <button onClick={handleLogout}>Logout</button>
+                {/* TODO: Add PostList component and main content here */}
+                <p>Main app content here...</p>
+              </div>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Redirect root path to login or dashboard based on auth status */}
+        <Route
+          path="/"
+          element={<Navigate to={user ? "/dashboard" : "/login"} replace />}
+        />
+
+        {/* Catch-all for undefined routes */}
+        <Route
+          path="*"
+          element={<Navigate to={user ? "/dashboard" : "/login"} replace />}
+        />
+      </Routes>
     </div>
   );
 }
