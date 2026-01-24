@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./Home.css";
 import Post from "./Post";
+import PostForm from "./PostForm";
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 // Home component: main dashboard after login
@@ -18,7 +19,9 @@ const Home = ({ user, onLogout }) => {
       try {
         const res = await fetch(`${API_BASE}/api/posts`);
         const data = await res.json();
-        setPosts(data.reverse()); // Newest first
+        // Always sort posts by createdAt descending (newest first)
+        data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setPosts(data);
       } catch (err) {
         setError("Failed to load posts");
       } finally {
@@ -34,6 +37,30 @@ const Home = ({ user, onLogout }) => {
       (post.title?.toLowerCase() || "").includes(search.toLowerCase()) ||
       (post.content?.toLowerCase() || "").includes(search.toLowerCase()),
   );
+
+  // Function to handle new post creation (passed as prop to post form component)
+  const handleCreatePost = async (content, clearInput) => {
+    setError("");
+    try {
+      const res = await fetch(`${API_BASE}/api/posts/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ content }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Failed to create post");
+      }
+      const newPost = await res.json();
+      setPosts((prev) => [newPost, ...prev]); // Newest always at top
+      if (clearInput) clearInput();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   return (
     <div className="home-container">
@@ -51,11 +78,13 @@ const Home = ({ user, onLogout }) => {
           Logout
         </button>
       </header>
+      {/* New Post Form below search bar, above posts */}
+      <PostForm onCreate={handleCreatePost} />
       {loading && <p>Loading posts...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div className="posts-list">
         {/* Render each post as a card */}
-        {[...filteredPosts].reverse().map((post) => (
+        {filteredPosts.map((post) => (
           <Post
             key={post._id}
             post={post}

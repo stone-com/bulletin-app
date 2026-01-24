@@ -1,0 +1,75 @@
+/* PostForm.css - Dark mode, responsive styles */
+.post-form {
+  background: #23272f;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px #000a;
+  padding: 1.2rem 1rem 1rem 1rem;
+  margin: 1.5rem 0 2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.post-form-textarea {
+  background: #181c22;
+  color: #f1f1f1;
+  border: 1px solid #444c56;
+  border-radius: 6px;
+  padding: 0.8em;
+  font-size: 1.1rem;
+  resize: vertical;
+  min-height: 60px;
+  max-height: 200px;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+.post-form-textarea:focus {
+  border-color: #f6e05e;
+  outline: none;
+}
+
+.post-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+
+.post-form button {
+  background: #3b4252;
+  color: #f1f1f1;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5em 1.2em;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.post-form button:hover {
+  background: #4c566a;
+}
+.post-form button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.post-form-error {
+  color: #e74c3c;
+  font-size: 0.98em;
+  margin-left: 0.5em;
+}
+
+@media (max-width: 600px) {
+  .post-form {
+    padding: 0.7rem 0.5rem 0.5rem 0.5rem;
+  }
+  .post-form-textarea {
+    font-size: 1rem;
+    padding: 0.6em;
+  }
+  .post-form-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5em;
+  }
+}

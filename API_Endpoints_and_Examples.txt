@@ -1,0 +1,106 @@
+# Bulletin App API Endpoints & Example JSON Bodies
+
+## Auth Endpoints
+
+### Register a User
+- **POST** `/api/auth/register`
+- **Body:**
+```json
+{
+  "username": "alice",
+  "email": "alice1@example.com",
+  "password": "Password123!"
+}
+```
+
+### Login a User
+- **POST** `/api/auth/login`
+- **Body:**
+```json
+{
+  "email": "alice1@example.com",
+  "password": "Password123!"
+}
+```
+
+---
+
+## Post Endpoints
+
+### Get All Posts
+- **GET** `/api/posts`
+
+### Get Single Post
+- **GET** `/api/posts/:id`
+
+### Create a Post
+- **POST** `/api/posts/create`
+- **Headers:**
+  - `Authorization: Bearer <token>`
+- **Body:**
+```json
+{
+  "content": "This is a new post!"
+}
+```
+
+### Update a Post
+- **PUT** `/api/posts/:id`
+- **Headers:**
+  - `Authorization: Bearer <token>`
+- **Body:**
+```json
+{
+  "content": "Updated post content."
+}
+```
+
+### Delete a Post
+- **DELETE** `/api/posts/:id`
+- **Headers:**
+  - `Authorization: Bearer <token>`
+
+---
+
+## Comment Endpoints
+
+### Get All Comments (admin/testing)
+- **GET** `/api/comments`
+
+### Get Comments for a Post
+- **GET** `/api/comments/post/:postId`
+
+### Create a Comment
+- **POST** `/api/comments/create`
+- **Headers:**
+  - `Authorization: Bearer <token>`
+- **Body:**
+```json
+{
+  "postId": "<postId>",
+  "content": "This is a comment!"
+}
+```
+
+### Update a Comment
+- **PUT** `/api/comments/:id`
+- **Headers:**
+  - `Authorization: Bearer <token>`
+- **Body:**
+```json
+{
+  "content": "Updated comment content."
+}
+```
+
+### Delete a Comment
+- **DELETE** `/api/comments/:id`
+- **Headers:**
+  - `Authorization: Bearer <token>`
+
+---
+
+## Notes
+- Replace `<token>` with the JWT token received from login.
+- Replace `<postId>` and `:id` with the actual IDs from your database.
+- All endpoints starting with `/api/posts` and `/api/comments` (except GET) require authentication.
