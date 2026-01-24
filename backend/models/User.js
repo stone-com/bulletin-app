@@ -27,18 +27,11 @@ const userSchema = new mongoose.Schema({
 
 // Pre-save hook: Automatically hash password before storing in database
 // Only hash if password is new or modified (not on every save)
-userSchema.pre("save", async function (next) {
-  // If the password hasn't been changed, skip hashing
-  if (!this.isModified("password")) return next();
-  try {
-    // Generate salt for hashing (10 rounds of hashing)
-    const salt = await bcrypt.genSalt(10);
-    // Hash password with salt
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (err) {
-    next(err);
-  }
+userSchema.pre("save", async function () {
+  console.log("Pre-save hook running for user:", this.email);
+  if (!this.isModified("password")) return;
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
 // Instance method: Compare plain text password with stored hashed password (for login)
@@ -46,7 +39,5 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.comparePassword = async function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
-
-module.exports = mongoose.model("User", userSchema);
 
 module.exports = mongoose.model("User", userSchema);
